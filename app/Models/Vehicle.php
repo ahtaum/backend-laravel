@@ -19,10 +19,10 @@ class Vehicle extends Model
     }
 
     public function motor() {
-        return $this->hasOne(Motor::class);
+        return $this->embedsOne(Motor::class);
     }
 
     public function car() {
-        return $this->hasOne(Car::class);
+        return $this->embedsOne(Car::class);
     }
 }

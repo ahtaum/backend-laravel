@@ -37,9 +37,9 @@ class VehicleController extends Controller
             return response()->json([
                 'code' => 200,
                 'status' => 'vehicle sold out!',
-                'total' => $vehicles->count()
+                'total' => $vehicle->count()
             ]);
-        } catch (\Expection $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'code' => 500,
                 'status' => 'error',
