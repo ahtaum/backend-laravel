@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MotorRequest;
-use Illuminate\Http\Request;
 
 use App\Models\Vehicle;
 use App\Models\Motor;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\MotorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,12 @@ Route::controller(VehicleController::class)->prefix("vehicles")->group(function 
 
 Route::controller(MotorController::class)->prefix("motor")->group(function () {
     Route::get("/", "getMotors");
+
+    Route::post("/add", "store");
+});
+
+Route::controller(CarController::class)->prefix("cars")->group(function () {
+    Route::get("/", "getCars");
 
     Route::post("/add", "store");
 });
