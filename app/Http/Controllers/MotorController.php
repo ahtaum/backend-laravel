@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MotorRequest;
 use App\Repository\Motor\MotorRepositoryInterface;
 
-use App\Models\Vehicle;
-use App\Models\Motor;
-
 class MotorController extends Controller
 {
     protected $motorRepository;

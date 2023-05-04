@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Repository\Vehicles\VehicleRepositoryInterface;
 use App\Http\Requests\SaleRequest;
-use App\Models\Vehicle;
-use Carbon\Carbon;
 
-class VehicleController extends Controller
-{
+class VehicleController extends Controller {
+    private $vehicleRepository;
+
+    public function __construct(VehicleRepositoryInterface $vehicleRepository) {
+        $this->vehicleRepository = $vehicleRepository;
+    }
+
     public function getVehicles() {
         try {
-            $vehicles = Vehicle::with("motor", "car")->get();
+            $vehicles = $this->vehicleRepository->getAll();
 
             return response()->json([
                 'code' => 200,
@@ -31,27 +35,7 @@ class VehicleController extends Controller
         try {
             $data = $request->validated();
 
-            $vehicle = Vehicle::find($data["vehicle_id"]);
-
-            if (!$vehicle) {
-                return response()->json([
-                    'code' => 404,
-                    'status' => 'error',
-                    'message' => 'Vehicle not found'
-                ], 404);
-            }
-
-            if ($vehicle->sold) {
-                return response()->json([
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'Vehicle already sold'
-                ], 400);
-            }
-
-            $vehicle->sold = true;
-            $vehicle->sold_at = Carbon::now();
-            $vehicle->save();
+            $this->vehicleRepository->updateSold($data["vehicle_id"]);
 
             return response()->json([
                 'code' => 200,
@@ -69,19 +53,7 @@ class VehicleController extends Controller
 
     public function getReports() {
         try {
-            $vehicles = Vehicle::where("sold", true)->with("motor", "car")->get();
-
-            $reportData = $vehicles->groupBy(function ($item) {
-                return $item->motor ? $item->motor->machine : $item->car->model;
-            })->map(function ($items) {
-                $totalSold = $items->count();
-                $totalPrice = $items->sum('price');
-                return [
-                    'total_sold' => $totalSold,
-                    'total_price' => $totalPrice,
-                    'average_price' => $totalSold > 0 ? $totalPrice / $totalSold : 0,
-                ];
-            });
+            $reportData = $this->vehicleRepository->getSoldReport();
 
             return response()->json([
                 'code' => 200,
@@ -96,5 +68,5 @@ class VehicleController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
-    }
+    }    
 }
