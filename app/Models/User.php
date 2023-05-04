@@ -9,7 +9,8 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Eloquent implements Authenticatable
 {
     use HasApiTokens;
-
+    
+    protected $connection = 'mongodb';
     protected $collection = 'users';
     protected $fillable = [
         'email', 'password', 'username'
