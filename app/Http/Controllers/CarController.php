@@ -10,8 +10,7 @@ class CarController extends Controller
 {
     protected $carRepository;
 
-    public function __construct(CarRepositoryInterface $carRepository)
-    {
+    public function __construct(CarRepositoryInterface $carRepository) {
         $this->carRepository = $carRepository;
     }
 

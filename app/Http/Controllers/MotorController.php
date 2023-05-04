@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MotorRequest;
+use App\Repository\Motor\MotorRepositoryInterface;
 
 use App\Models\Vehicle;
 use App\Models\Motor;
 
 class MotorController extends Controller
 {
+    protected $motorRepository;
+
+    public function __construct(MotorRepositoryInterface $motorRepository)
+    {
+        $this->motorRepository = $motorRepository;
+    }
+
     public function getMotors() {
         try {
-            $motor = Motor::all();
+            $motor = $this->motorRepository->getAll();
 
             return response()->json([
                 'code' => 200,
@@ -32,21 +40,7 @@ class MotorController extends Controller
         try {   
             $data = $request->validated();
 
-            $vehicle = new Vehicle;
-            $vehicle->year = $data["year"];
-            $vehicle->color = $data["color"];
-            $vehicle->price = $data["price"];
-            $vehicle->save();
-    
-            $motor = new Motor();
-            $motor->machine = $data["machine"];
-            $motor->suspension_type = $data["suspension_type"];
-            $motor->transmision_type = $data["transmision_type"];
-            $motor->vehicle()->associate($vehicle);
-            $motor->save();
-    
-            $vehicle->motor()->associate($motor);
-            $vehicle->save();
+            $this->motorRepository->create($data);
 
             return response()->json([
                 'code' => 200,
