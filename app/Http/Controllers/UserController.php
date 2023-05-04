@@ -30,32 +30,12 @@ class UserController extends Controller
         }
     }
 
-    public function getUser($id) {
-        try {
-            $user = User::findOrFail($id);
-
-            return response()->json([
-                'code' => 200,
-                'status' => 'success',
-                'data' => $user
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'code' => 500,
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function addUser(CreateUserRequest $request) {
         try {
             $user = User::create([
                 'email' => $request->email,
                 'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'created_at' => now(),
-                'updated_at' => now()
+                'password' => Hash::make($request->password)
             ]);
 
             return response()->json([
@@ -63,35 +43,6 @@ class UserController extends Controller
                 'status' => 'success',
                 'message' => 'User created successfully.',
                 'data_created' => $user
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'code' => 500,
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function updateUser(CreateUserRequest $request, $id) {
-        try {
-            $user = User::findOrFail($id);
-            $user->email = $request->email;
-            $user->username = $request->username;
-            $user->created_at = now();
-            $user->updated_at = now();
-
-            if ($request->has('password')) {
-                $user->password = Hash::make($request->password);
-            }
-
-            $user->save();
-
-            return response()->json([
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'User updated successfully',
-                'data' => $user
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -121,4 +72,6 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    
 }

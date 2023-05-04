@@ -10,10 +10,8 @@ use App\Http\Controllers\VehicleController;
 
 Route::controller(UserController::class)->prefix("users")->group(function () {
     Route::get("/", "getUsers");
-    Route::get("/{id}", "getUser");
 
     Route::post("/add", "addUser");
-    Route::put("/edit/{id}", "updateUser");
     Route::delete("/delete/{id}", "deleteUser");
 });
 
