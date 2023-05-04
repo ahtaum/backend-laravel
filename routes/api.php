@@ -19,9 +19,10 @@ Route::controller(UserController::class)->prefix("users")->group(function () {
 
 Route::controller(VehicleController::class)->prefix("vehicles")->group(function () {
     Route::get("/", "getVehicles");
+    Route::get("/reports", "getReports");
     Route::get("/{id}", "getVehicle");
 
-    Route::delete("/sold/{id}", "sold");
+    Route::post("/sell", "sellVehicle");
 });
 
 Route::controller(MotorController::class)->prefix("motor")->group(function () {
