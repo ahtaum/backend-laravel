@@ -12,6 +12,7 @@ Route::controller(UserController::class)->prefix("users")->group(function () {
     Route::get("/", "getUsers");
 
     Route::post("/add", "addUser");
+    Route::post("/login", "login");
     Route::delete("/delete/{id}", "deleteUser");
 });
 

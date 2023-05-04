@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\CreateUserRequest;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -73,5 +74,37 @@ class UserController extends Controller
         }
     }
 
+    // Authentication
+    public function login(Request $request) {
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
     
+            $credentials = $request->only('email', 'password');
+    
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                $token = $user->createToken('token_name')->plainTextToken;
+    
+                return response()->json([
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                ]);
+            }
+
+            return response()->json([
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'Unauthorized.'
+            ], 401);
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 500,
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

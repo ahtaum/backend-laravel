@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CarRequest;
 
-use App\Models\Vehicle;
-use App\Models\Car;
+use App\Repository\Cars\CarRepositoryInterface;
 
 class CarController extends Controller
 {
+    protected $carRepository;
+
+    public function __construct(CarRepositoryInterface $carRepository)
+    {
+        $this->carRepository = $carRepository;
+    }
+
     public function getCars() {
         try {
-            $cars = Car::all();
+            $cars = $this->carRepository->getAllCars();
 
             return response()->json([
                 'code' => 200,
@@ -32,21 +38,7 @@ class CarController extends Controller
         try {
             $data = $request->validated();
     
-            $vehicle = new Vehicle;
-            $vehicle->year = $data["year"];
-            $vehicle->color = $data["color"];
-            $vehicle->price = $data["price"];
-            $vehicle->save();
-    
-            $cars = new Car();
-            $cars->machine = $data["machine"];
-            $cars->capacity = $data["capacity"];
-            $cars->type = $data["type"];
-            $cars->vehicle()->associate($vehicle);
-            $cars->save();
-    
-            $vehicle->car()->associate($cars);
-            $vehicle->save();
+            $this->carRepository->createCar($data);
     
             return response()->json([
                 'code' => 200,
